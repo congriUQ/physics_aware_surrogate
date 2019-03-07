@@ -36,6 +36,24 @@ Fine scale (Stokes flow) data is available.
 1024 solution fields (vertex values of pressure and velocity fields for meshes above) as used in section 3.3 of the [paper](https://arxiv.org/abs/1902.03968) can be downloaded [here](https://doi.org/10.6084/m9.figshare.7814345)
 
 
+## Fine scale data generation (Stokes flow)
+
+
+### Generation of microstructures
+To generate random microstructures as in sec. 3.3 of the [paper](https://arxiv.org/abs/1902.03968), set up distribution parameters in lines 6-23 of `./genMicrostruct/genCorrMicrostruct.m` as desired and run
+```
+/path/to/matlab -nodesktop -nodisplay -nosplash -r "addpath('./genMicrostruct') ; genCorrMicrostruct ; quit;"
+```
+`.mat` files containing the center coordinates and radii of each exclusion are stored in the folder `./data`.
+
+
+### Generation of fine scale triangular finite element meshes
+It is recommended to increase the stack size limit via
+```
+ulimit -s 32000
+```
+to avoid stack overflow during mesh generation.
+
 
 
 
