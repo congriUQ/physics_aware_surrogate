@@ -9,4 +9,22 @@ The automated construction of coarse-grained models represents a pivotal compone
 Schematic model overview.
 
 
+## Dependencies
+- Matlab R2018b
+- python 3.6
+- FEniCS 2018.1.0
+- mshr 2018.1.0
+- scipy 1.1.0
+- numpy 1.14.6
+
+
+## Installation
+- Install Matlab, python 3.6 and all dependencies
+- To clone this repo:
+```
+git clone https://github.com/congriUQ/physics_aware_surrogate.git
+cd physics_aware_surrogate
+```
+
+
 
