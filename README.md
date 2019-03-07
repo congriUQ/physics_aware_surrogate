@@ -29,7 +29,9 @@ cd physics_aware_surrogate
 ## Data
 Fine scale (Stokes flow) data is available. 
 1024 microstructures (center coordinates and radii of spherical exclusions, i.e. solid phase) as used in section 3.3 of the [paper](https://arxiv.org/abs/1902.03968) can be downloaded [here](https://doi.org/10.6084/m9.figshare.7814345)
+
 1024 fine scale triangular meshes (corresponding to the microstructures above; vertex coordinates and cell connectivity) as used in section 3.3 of the [paper](https://arxiv.org/abs/1902.03968) can be downloaded [here](https://doi.org/10.6084/m9.figshare.7814297.v1)
+
 1024 solution fields (vertex values of pressure and velocity fields for meshes above) as used in section 3.3 of the [paper](https://arxiv.org/abs/1902.03968) can be downloaded [here](https://doi.org/10.6084/m9.figshare.7814345)
 
 
