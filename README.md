@@ -8,4 +8,7 @@ The automated construction of coarse-grained models represents a pivotal compone
 ![overview](https://raw.githubusercontent.com/congriUQ/physics_aware_surrogate/master/fig/overview.png)
 
 
+Schematic model overview.
+
+
 
