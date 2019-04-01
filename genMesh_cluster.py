@@ -17,7 +17,7 @@ foldername1 = './data/meshSize=' + str(nElements)
 
 # Parameters only for 'circles' mode
 nExclusionsDist='logn'
-nExclusionParams = [8.1, 0.6]
+nExclusionParams = [7.8, 0.2]
 coordinateDist = 'GP'
 # to avoid circles on boundaries. Min. distance of circle centers to (lo., r., u., le.) boundary
 # negative margin means no margin
@@ -25,15 +25,15 @@ margins = [0.003, 0.003, 0.003, 0.003]
 origin_margin = .03
 substractCorners = False     # Substracts circles from domain corners s.t. flow cannot pass
 radiiDist = 'lognGP'
-r_params = [-5.53, 0.3]
+r_params = [-5.53, 0.2]
 # for x~gauss
 coordinate_cov = [[0.55, -0.45], [-0.45, 0.55]]
 coordinate_mu = [.8, .8]
 # for x~GP
 covFun = 'squaredExponential'
-cov_l = 0.1
-sig_scale = 1.5
-sigmaGP_r = 0.4
+cov_l = 0.08
+sig_scale = 1.2
+sigmaGP_r = 0.01
 lengthScale_r = .05
 
 
