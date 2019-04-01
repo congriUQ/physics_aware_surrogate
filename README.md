@@ -59,6 +59,7 @@ Set up a conda Python 3 environment with the above modules (FEniCS, mshr, numpy,
 python ./genMesh_cluster.py
 ```
 This will generate 2-dimensional triangular meshes with random (approximately) circular exclusions based on the random microstructures saved in `/path/to/microstructureInformationX.mat`. The script will run until `nMeshes` meshes are generated. 
+
 **Attention**: mesh generation may take from a couple of minutes (for ~1000 circular exclusions) to several days (for ~10 000 exclusions or more). You may consider to run the mesh generation script on several CPUs in parallel. The script checks automatically to which microstructures there is no mesh/no currently running mesh generation and starts the one with the smallest number X. If you kill a mesh generation job for some reason, you should delete the file `/path/to/computation_started.txt` s.t. the above script can restart the generation of the corresponding meshes.
 The mesh files are stored in the same folder as the microstructural data and the corresponding index, i.e. `/path/to/meshX.mat` belonging to the microstructure `/path/to/microstructureInformationX.mat`.
 
