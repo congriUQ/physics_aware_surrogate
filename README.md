@@ -44,7 +44,7 @@ To generate random microstructures as in sec. 3.3 of the [paper](https://arxiv.o
 ```
 /path/to/matlab -nodesktop -nodisplay -nosplash -r "addpath('./genMicrostruct') ; genCorrMicrostruct ; quit;"
 ```
-`.mat` files containing the center coordinates and radii of each exclusion are stored in the folder `./data`.
+`.mat` files containing the center coordinates and radii of each exclusion are stored in the folder `./data` under a path name dependent on the microstructural parameters.
 
 
 ### Generation of fine scale triangular finite element meshes

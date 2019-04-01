@@ -99,8 +99,6 @@ while mesh_name_iter < nMeshes:
     started_file.close()
     print('started_computations == ', started_computations)
 
-    # while os.path.isfile(foldername + '/microstructureInformation' + str(mesh_name_iter) + '.mat')\
-    #         and mesh_name_iter < nMeshes:
     while ((not os.path.isfile(nomeshInfoFile)) or os.path.isfile(meshfile)
            or ((str(mesh_name_iter) + '\n') in started_computations)):
         mesh_name_iter += 1
@@ -133,14 +131,6 @@ while mesh_name_iter < nMeshes:
     mesh = mshr.generate_mesh(domain, nElements)
     print('...FE mesh generated.')
 
-    # save mesh in xml format for later use
-    # OUTDATED
-    # filename = foldername + '/mesh' + str(mesh_name_iter) + '.xml'
-    # print('saving mesh to ./mesh', str(mesh_name_iter), '.xml ...')
-    # mesh_file = df.File(filename)
-    # mesh_file << mesh
-    # print('... ./mesh', str(mesh_name_iter), '.xml saved.')
-
     # save to local directory first
     print('Saving mesh to NFS...')
     sys.stdout.flush()
@@ -150,19 +140,10 @@ while mesh_name_iter < nMeshes:
     print('...done. Time: ', t1 - t0)
     sys.stdout.flush()
 
-    # # save vertex coordinates and cell connectivity to mat file for easy read-in to matlab
-    # print('saving mesh to ./mesh' + str(mesh_name_iter) + '.mat ...')
-    # # is this more efficient with compression turned on?
-    # sys.stdout.flush()
-    # sio.savemat(foldername + '/mesh' + str(mesh_name_iter) + '.mat',
-    #             {'x': mesh.coordinates(), 'cells': mesh.cells() + 1}, do_compression=True)
-    # print('... ./mesh' + str(mesh_name_iter) + '.mat saved.')
-    # sys.stdout.flush()
+    # save vertex coordinates and cell connectivity to mat file for easy read-in to matlab
     # move microstructureInformation file, this is the signal that a job is already generating a mesh
     shutil.move(foldername + '/microstructureInformation_nomesh' + str(mesh_name_iter) + '.mat',
              foldername + '/microstructureInformation' + str(mesh_name_iter) + '.mat')
-    # print('removing ' + './microstructureInformation_nomesh' + str(mesh_name_iter) + '.mat ...')
-    # os.remove(foldername + '/microstructureInformation_nomesh' + str(mesh_name_iter) + '.mat')
     print('... ./microstructureInformation_nomesh' + str(mesh_name_iter) + '.mat renamed.')
     sys.stdout.flush()
 
