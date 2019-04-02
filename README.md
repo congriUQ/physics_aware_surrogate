@@ -75,6 +75,8 @@ The solutions are stored under `path/to/p_bc=.../u_x=..._u_y=.../solutionX.mat`,
 
 
 
+## Model training
+
 
 
 
