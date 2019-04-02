@@ -96,7 +96,24 @@ to train the surrogate according to section 2.4 of the paper. Convergence can be
 
 
 ## Model predictions
+After fine scale data has been generated/downloaded and the model has been trained, converged model parameters are stored in the folder `/physics_aware_surrogate/rom/data`. The found parameters may be used to predict on independent test data. Run the script
+```
+>> predictionScript
+```
+to predict on a small test set. The code may be used to follow up on the paper results and to do own experiments.
 
+
+
+## Citation
+If this code is relevant for your research, we would be grateful if you cite our preprint:
+```
+@article{Grigo2019,
+Author = {Constantin Grigo and Phaedon-Stelios Koutsourelakis},
+Title = {A physics-aware, probabilistic machine learning framework for coarse-graining high-dimensional systems in the Small Data regime},
+Year = {2019},
+Eprint = {arXiv:1902.03968},
+}
+```
 
 
 
