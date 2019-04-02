@@ -62,9 +62,6 @@ classdef StokesROM < handle
                     self.modelParams.theta_c;
                 PhiThetaMean_n_sq_sum = PhiThetaMean_n_sq_sum + ...
                     PhiThetaMean_n.^2;
-                %second term
-%                 XMean_n = XMean(:, n)
-%                 pred = self.trainingData.designMatrix{n}*self.modelParams.theta_c
                 d = d - XMean(:, n).*PhiThetaMean_n;
             end
             %third term
@@ -196,19 +193,11 @@ classdef StokesROM < handle
                 A = self.modelParams.Sigma_theta_c'.*...
                     (Phi_full'*(tau_c_long*Phi_full));
                 A_diag = diag(A);
-%                 A = A';
-%                 A = self.modelParams.Sigma_theta_c.*A;
-%                 A_diag = self.modelParams.Sigma_theta_c.*A_diag;
+
                 sumPhiT_tau_cXMean_Sigma_plus_A_diag_theta = ...
                     self.modelParams.Sigma_theta_c.*sumPhiTau_cXMean + ...
                     A_diag.*self.modelParams.theta_c;
                 tc = self.modelParams.theta_c';
-
-%                 for j = 1:dim_theta
-%                     term2 = A(j, :)*tc;
-%                     tc(j) =...
-%                         sumPhiT_tau_cXMean_Sigma_plus_A_diag_theta(j) - term2;
-%                 end
                 
                 nCycles = 1;
                 for c = 1:nCycles
@@ -219,22 +208,6 @@ classdef StokesROM < handle
                     end
                 end
                 
-                %Randomized updates
-%                 nIter = 10*dim_theta;
-%                 for iter = 1:nIter
-%                     j = randi(dim_theta);
-%                     term2 = A(j, :)*tc;
-%                     tc(j) =...
-%                         sumPhiT_tau_cXMean_Sigma_plus_A_diag_theta(j) - term2;
-%                 end
-
-%                 %should be correct in local mode
-%                 for j = 1:nFeatures
-%                     term2 = A(j:nElc:end, :)*tc;
-%                     tc(j:nElc:end) =...
-%                         sumPhiT_tau_cXMean_Sigma_plus_A_diag_theta(j:nElc:end)...
-%                         - term2;
-%                 end
                 self.modelParams.theta_c = tc';
             else
                 self.modelParams.theta_c =...
@@ -246,8 +219,7 @@ classdef StokesROM < handle
             if isempty(self.modelParams.Sigma_theta_c)
                 dim_theta = numel(self.modelParams.theta_c);
                 nElc = size(self.trainingData.designMatrix{1}, 1);
-%                 Sigma_theta_c = spalloc(dim_theta, dim_theta, dim_theta^2/nElc);
-%                 Sigma_theta_c(1:(dim_theta + 1):end)= 1./self.modelParams.gamma;
+
                 if self.modelParams.diag_theta_c
                     self.modelParams.Sigma_theta_c = 1./self.modelParams.gamma;
                 else
@@ -364,15 +336,12 @@ classdef StokesROM < handle
                     %precision of theta_c
                     self.modelParams.gamma =...
                         (self.modelParams.a)./(self.modelParams.b);
-%                     gamma = self.modelParams.gamma(1:10)
-%                     pause
+
                     self.update_d(XMean, XSqMean);
                     
                     %precision of p_c
                     self.modelParams.Sigma_c = sparse(...
                         diag((self.modelParams.d)./(self.modelParams.c)));
-%                     Sigma_c = self.modelParams.Sigma_c
-%                     pause
                     
                     %Q(theta_c)
                     self.compute_Sigma_theta_c(Phi_full, I, opts);
@@ -674,9 +643,7 @@ classdef StokesROM < handle
                     sb2.BoxStyle = 'full';
                     th.FaceColor = 'k';
                 end
-                
-%                 cbp_true = colorbar('Parent', fig);
-                
+                                
                 sb3 = subplot(4, 3, 3 + (i - 1)*3,...
                     'Parent', self.pCurrState.figure);
                 
@@ -747,10 +714,7 @@ classdef StokesROM < handle
                 trihandle3.LineStyle = 'none';
                 hold(sb3, 'off');
                 axis(sb3, 'tight');
-%                 sb3.ZLim = [mean(self.trainingData.P{i + dataOffset}) - ...
-%                     3*std(self.trainingData.P{i + dataOffset}), ...
-%                     mean(self.trainingData.P{i + dataOffset}) + ...
-%                     3*std(self.trainingData.P{i + dataOffset})];
+
                 caxis(sb3, sb3.ZLim);
                 axis(sb3, 'square');
                 sb3.Box = 'on';
@@ -818,16 +782,7 @@ classdef StokesROM < handle
             
             stdLogS = [];   %for parfor
             
-            %to use point estimate for theta
-%             self.modelParams.Sigma_theta_c =...
-%                 1e-6*eye(numel(self.modelParams.gamma));
-%             eig(self.modelParams.Sigma_theta_c)
-%             pause
-%             self.modelParams.Sigma_c = 1e-6*self.modelParams.Sigma_c;
-%             self.modelParams.Sigma_c
-%             self.modelParams.Sigma_c(self.modelParams.Sigma_c > 1e-1) = ...
-%                 1e-1;
-%             pause
+
             dim_theta = numel(self.modelParams.theta_c);
             if isvector(self.modelParams.Sigma_theta_c)
                 Sigma_theta_c = sparse(1:dim_theta, 1:dim_theta, ...
@@ -999,9 +954,6 @@ classdef StokesROM < handle
                 %Remove response of first vertex as this is an essential node
                 %ATTENTION: THIS IS ONLY VALID FOR B.C.'s WHERE VERTEX 1 IS THE 
                 %ONLY ESSENTIAL VERTEX
-%                 meanMahaErrTemp{n} =...
-%                     mean(sqrt(abs((1./(predVarArray{n}(2:end))).*...
-%                     (P{n}(2:end) - predMeanArray{n}(2:end)).^2)));
                 sqDist{n} = (P{n}(2:end) - predMeanArray{n}(2:end)).^2;
                 
                 logLikelihood = -.5*numel(P{n}(2:end))*log(2*pi) -...
@@ -1009,15 +961,9 @@ classdef StokesROM < handle
                     .5*sum(sqDist{n}./predVarArray{n}(2:end), 'omitnan');
                 %average over dof's
                 meanLogLikelihood(n) = logLikelihood/numel(P{n}(2:end));
-%                 logPerplexity{n} = -(1/(numel(P{n}(2:end))))*logLikelihood{n};
             end
             
-%             meanMahalanobisError = mean(cell2mat(meanMahaErrTemp));
             meanSqDist = mean(cell2mat(sqDist), 2);
-%             meanSquaredDistanceError =...
-%                 sqrt((meanSqDistSq - meanSqDist^2)/nTest);
-%             meanLogPerplexity = mean(cell2mat(logPerplexity));
-%             meanPerplexity = exp(meanLogPerplexity);
             
             %Coefficient of determination, see wikipedia
             SS_res = mean(meanSqDist);
@@ -1061,11 +1007,8 @@ classdef StokesROM < handle
                     axis(splt(i), 'square');
                     splt(i).View = [-80, 20];
                     splt(i).GridLineStyle = 'none';
-%                     splt(i).XTick = [];
-%                     splt(i).YTick = [];
                     splt(i).Box = 'on';
                     splt(i).BoxStyle = 'full';
-%                     splt(i).ZLim = [-2e4, 4e3];
                     cbp_true = colorbar('Parent', fig);
                     splt(i).CLim = [min(P(:, i + pltstart)), ...
                         max(P(:, i + pltstart))];
@@ -1085,43 +1028,6 @@ classdef StokesROM < handle
                     end
                     thdlpred.LineStyle = 'none';
                     thdlpred.FaceColor = 'b';
-                    
-%                     %predictive mean + std
-%                     if intp
-%                         thdlpstd = surf(XX, YY,...
-%                             reshape(predMeanArray{i + pltstart} +...
-%                             sqrt(predVarArray{i + pltstart}), nSX, nSY),...
-%                             'Parent', splt(i));
-%                     else
-%                         thdlpstd= trisurf(double(testStokesData.cells{i + pltstart}),...
-%                             testStokesData.X{i + pltstart}(:, 1),...
-%                             testStokesData.X{i + pltstart}(:, 2),...
-%                             predMeanArray{i + pltstart} +...
-%                             sqrt(predVarArray{i + pltstart}),...
-%                             'Parent', splt(i));
-%                     end
-%                     thdlpstd.LineStyle = 'none';
-%                     thdlpstd.FaceColor = [.85 .85 .85];
-%                     thdlpstd.FaceAlpha = .7;
-%                     
-%                     %predictive mean - std
-%                     if intp
-%                         thdlmstd = surf(XX, YY,...
-%                             reshape(predMeanArray{i + pltstart} -...
-%                             sqrt(predVarArray{i + pltstart}), nSX, nSY),...
-%                             'Parent', splt(i));
-%                     else
-%                         thdlmstd= trisurf(double(testStokesData.cells{i + pltstart}),...
-%                             testStokesData.X{i + pltstart}(:, 1),...
-%                             testStokesData.X{i + pltstart}(:, 2),...
-%                             predMeanArray{i + pltstart} -...
-%                             sqrt(predVarArray{i + pltstart}),...
-%                             'Parent', splt(i));
-%                     end
-%                     thdlmstd.LineStyle = 'none';
-%                     thdlmstd.FaceColor = [.85 .85 .85];
-%                     thdlmstd.FaceAlpha = .7;
-
                 end
             end
             
@@ -1134,8 +1040,6 @@ classdef StokesROM < handle
             
             if isempty(self.modelParams)
                 %Read in trained params form ./data folder
-                %self.modelParams = ModelParams;
-                %self.modelParams = self.modelParams.load;
                 load('./data/modelParams.mat');
                 self.modelParams = modelParams;     clear modelParams;
             end
@@ -1204,18 +1108,14 @@ classdef StokesROM < handle
 
                 
                 for j = 1:MCsamples
-%                     lambda_c_sample = mvnrnd(mu_lambda_c, Sigma_lambda_c)';
                     lambda_c_sample = normrnd(mu_lambda_c,...
                         sqrt(diag(Sigma_lambda_c)));
-%                     lambda_c_sample = normrnd(varmu{n}, varsig{n})';
                     [~, d_log_p_cf] = log_p_cf(P{n},cm, lambda_c_sample,...
                         W_cf_n, S_cf_n, diffTransform, diffLimits, rf2fem,...
                         true);
                     if d_reallambda
                         d_log_p_cf = d_log_p_cf./exp(lambda_c_sample);
                     end
-%                     d_log_p_cf_sqMean{n} = ((j - 1)/j)*d_log_p_cf_sqMean{n} +...
-%                         (1/j)*d_log_p_cf.^2;
                     d_log_p_cf_sqMean{n} = ((j - 1)/j)*d_log_p_cf_sqMean{n} +...
                         (1/j)*abs(d_log_p_cf);
                 end

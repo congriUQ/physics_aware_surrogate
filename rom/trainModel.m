@@ -19,7 +19,6 @@ rng('shuffle');
 %% Initialization
 %Which data samples for training?
 nTrain = 16;
-% nStart = randi(1023 - nTrain); 
 nStart = 0;
 samples = nStart:(nTrain - 1 + nStart);
 loadParams = false;     %load parameters from previous run?
@@ -82,7 +81,7 @@ end
 tic_tot = tic;
 for split_iter = 1:(nSplits + 1)
     
-    clear XMean XSqMean
+    clear XMean XSqMean;
     %delete design matrices so that they can be recomputed
     rom.trainingData.designMatrix = cell(1, nTrain);
     rom.trainingData.evaluateFeatures(rom.modelParams.gridRF);
@@ -217,8 +216,6 @@ for split_iter = 1:(nSplits + 1)
         ticBytes(gcp);
         tic
         parfor n = pstart:pend
-%             mx{n} = max_fun(lg_q_max{n}, varDistParamsVec{n}(1:nRFc));
-%             varDistParamsVec{n}(1:nRFc) = mx{n};
             %Finding variational approximation to q_n
             [varDistParams{n}, varDistParamsVec{n}] = efficientStochOpt(...
                 varDistParamsVec{n}, lg_q{n}, 'diagonalGauss', sw, nRFc, t);
@@ -261,21 +258,12 @@ for split_iter = 1:(nSplits + 1)
         rom.M_step(XMean, XSqMean, sqDist)
         disp('...M-step done.')
         M_step_time = toc
-        
-        if ~exist('figElboTest')
-            figElboTest =...
-                figure('units','normalized','outerposition',[0 0 1 1]);
-        end
+
         rom.modelParams.compute_elbo(nTrain, XMean, XSqMean,...
-            rom.trainingData.X_interp{1}, figElboTest);
+            rom.trainingData.X_interp{1});
         elbo = rom.modelParams.elbo
         
         if(~mod(rom.modelParams.EM_iter_split - 1, 3) && nSplits)
-%         if false
-%             rom.modelParams.active_cells_S = rom.findMeshRefinement(true)';
-%             activeCells_S = rom.modelParams.active_cells_S
-%             filename = './data/activeCells_S';
-%             save(filename, 'activeCells_S', '-ascii', '-append');
             rom.modelParams.active_cells = rom.findMeshRefinement(false)';
             activeCells = rom.modelParams.active_cells
             filename = './data/activeCells';
