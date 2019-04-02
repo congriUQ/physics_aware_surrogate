@@ -33,6 +33,11 @@ Fine scale (Stokes flow) data is available.
 
 1024 fine scale triangular meshes (corresponding to the microstructures above; vertex coordinates and cell connectivity) as used in section 3.3 of the [paper](https://arxiv.org/abs/1902.03968) can be downloaded [here](https://doi.org/10.6084/m9.figshare.7814297.v1).
 
+For correct usage, meshes and microstructures should both be saved under
+```
+/physics_aware_surrogate/data/meshSize=256/nonOverlappingDisks/margins=0.003_0.003_0.003_0.003/N~logn/mu=7.8/sigma=0.2/x~GP/cov=squaredExponential/l=0.08/sig_scale=1.2/r~lognGP/mu=-5.23/sigma=0.3/sigmaGP_r=0.4/l=0.05
+```
+
 1024 solution fields (vertex values of pressure and velocity fields for meshes above) as used in section 3.3 of the [paper](https://arxiv.org/abs/1902.03968) can be downloaded [here](https://doi.org/10.6084/m9.figshare.7814345).
 
 
