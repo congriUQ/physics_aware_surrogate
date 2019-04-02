@@ -78,7 +78,7 @@ The solutions are stored under `path/to/p_bc=.../u_x=..._u_y=.../solutionX.mat`,
 ## Model training
 Set the model parameters in the properties of the `ModelParams` class and the microstructure/fine scale data parameters in the `StokesData` class. In Matlab, run
 ```
-trainModel
+>> trainModel
 ```
 to train the surrogate according to section 2.4 of the paper. Convergence can be observed by the plots generated after every iteration as well as several parameters printed on the Matlab screen.
 
