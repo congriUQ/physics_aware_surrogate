@@ -727,7 +727,7 @@ classdef StokesROM < handle
         end
         
         function [predMeanArray, predVarArray, meanEffCond, meanSqDist,...
-                sqDist, meanLogLikelihood, R, R_i] =...
+                sqDist, meanLogLikelihood, R] =...
                 predict(self, testData, mode)
             %Function to predict finescale output from generative model
             %stokesData is a StokesData object of fine scale data
@@ -968,14 +968,8 @@ classdef StokesROM < handle
             %Coefficient of determination, see wikipedia
             SS_res = mean(meanSqDist);
             P = cell2mat(P);
-            p_bar = mean(P, 2);
-            p_bar_bar = mean(p_bar)
-            p_var = mean((P - p_bar).^2, 2);
-            p_var_bar = mean(p_var)
             SS_tot = mean(var(P, 1, 2));
             R = 1 - SS_res/SS_tot           %Same as (23) in Zhu, Zabaras
-            R_i = 1 - meanSqDist./p_var(2:end);
-            mean_R_i = mean(R_i)
 
             
             %% plotting the predictions

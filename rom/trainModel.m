@@ -1,7 +1,8 @@
 %% This is the main training file for the Darcy-type ROM for Stokes equation
 %% Preamble:
+
 rehash
-restoredefaoultpath
+restoredefaultpath
 clear
 addpath('./featureFunctions/nonOverlappingPolydisperseSpheres')
 addpath('./mesh')
@@ -13,6 +14,7 @@ addpath('./VI')
 %No badly conditioned warnings -- turn on if desired
 warning('off', 'MATLAB:nearlySingularMatrix');
 
+startup;    %for proper graphics configuration
 %random number seed based on time
 rng('shuffle');
 
@@ -385,5 +387,3 @@ for split_iter = 1:(nSplits + 1)
         rom.trainingData.designMatrixSqSum = [];
     end
 end
-
-predictionScript;
