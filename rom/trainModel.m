@@ -1,6 +1,7 @@
 %% This is the main training file for the Darcy-type ROM for Stokes equation
 %% Preamble:
-
+rehash
+restoredefaoultpath
 clear
 addpath('./featureFunctions/nonOverlappingPolydisperseSpheres')
 addpath('./mesh')
