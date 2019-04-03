@@ -117,20 +117,12 @@ for split_iter = 1:(nSplits + 1)
         coarseMesh = rom.modelParams.coarseMesh;
         coarseMesh = coarseMesh.shrink;
     else
+        nX = length(rom.modelParams.coarseGridX);
+        nY = length(rom.modelParams.coarseGridY);
         for n = 1:nTrain
             %random bc's
             coarseMesh{n} = rom.modelParams.coarseMesh;
-            p_bc_handle = str2func(strcat('@(x)', rom.trainingData.p_bc));
-            u_bc_handle{1} = @(x) - rom.trainingData.bc{n}(2)...
-                                  - rom.trainingData.bc{n}(3)*x;
-            u_bc_handle{2} = @(y) rom.trainingData.bc{n}(1) + ...
-                                  rom.trainingData.bc{n}(3)*y;
-            u_bc_handle{3} = @(x) rom.trainingData.bc{n}(2) + ...
-                                  rom.trainingData.bc{n}(3)*x;
-            u_bc_handle{4} = @(y) - rom.trainingData.bc{n}(1)...
-                                  - rom.trainingData.bc{n}(3)*y;
-            nX = length(rom.modelParams.coarseGridX);
-            nY = length(rom.modelParams.coarseGridY);
+            [p_bc_handle, u_bc_handle] = rom.trainingData.returnBCFun(n); 
             coarseMesh{n} = coarseMesh{n}.setBoundaries(2:(2*nX + 2*nY),...
                 p_bc_handle, u_bc_handle);
             coarseMesh{n} = coarseMesh{n}.shrink;
@@ -181,8 +173,6 @@ for split_iter = 1:(nSplits + 1)
             end
             lg_q{n} = @(Xi) log_q_n(Xi, P_n_minus_mu, W_cf_n, S_cf_n, tc,...
                 Phi_n, cm, transType, transLimits, rf2fem, true);
-            lg_q_max{n} = @(Xi) log_q_n(Xi, P_n_minus_mu, W_cf_n, S_cf_n, tc,...
-                Phi_n, cm, transType, transLimits, rf2fem, false);
         end
         varDistParamsVec = rom.modelParams.varDistParamsVec;
         

@@ -147,6 +147,21 @@ classdef StokesData < handle
             end
         end
         
+        function [p_bc_handle, u_bc_handle] = returnBCFun(self, n)
+            %converts boundary condition strings to handle functions
+            %   n:  labels the data point if random boundary conditions are
+            %   used
+            if nargin < 2
+                error('Should only be used with random bc`s. Is data.bc = []?')
+            else
+                p_bc_handle = str2func(strcat('@(x)', self.p_bc));
+                u_bc_handle{1} = @(x) - self.bc{n}(2) - self.bc{n}(3)*x;
+                u_bc_handle{2} = @(y) self.bc{n}(1) + self.bc{n}(3)*y;
+                u_bc_handle{3} = @(x) self.bc{n}(2) + self.bc{n}(3)*x;
+                u_bc_handle{4} = @(y) - self.bc{n}(1) - self.bc{n}(3)*y;
+            end
+        end
+        
         function readData(self, quantities)
             %Reads in Stokes equation data from fenics
             %samples:          samples to load
@@ -408,52 +423,6 @@ classdef StokesData < handle
                         ((xx - self.microstructData{n}.diskCenters(nCircle, 1)).^2 +...
                         (yy - self.microstructData{n}.diskCenters(nCircle, 2)).^2 <= r2(nCircle));
                 end
-            end
-        end
-        
-        %depreceated
-        function input2bitmap_old(self, gridX, gridY)
-            %Converts input microstructures to bitmap images
-            %Feed in grid vectors for vertex coordinates, not elements!
-            %first index in input_bitmap is x-index!
-            
-            if isempty(self.X)
-                self.readData('x');
-            end
-            if isempty(self.microstructData)
-                self.readData('m');
-            end
-            
-            if nargin < 3
-                gridY = gridX;
-            end
-            
-            %gridX, gridY must be row vectors
-            if size(gridX, 1) > 1
-                gridX = gridX';
-            end
-            if size(gridX, 1) > 1
-                gridY = gridY';
-            end
-            
-            
-            centroids_x = movmean(gridX, 2); centroids_x = centroids_x(2:end);
-            centroids_y = movmean(gridY, 2); centroids_y = centroids_y(2:end);
-            
-            for n = 1:numel(self.X)
-                self.input_bitmap{n} = true(numel(gridX) - 1, numel(gridY) - 1);
-                %Loop over all element centroids and check if they are within 
-                %the domain or not
-                    dist_x_sq = (self.microstructData{n}.diskCenters(:, 1)...
-                        - centroids_x).^2;
-                    dist_y_sq = (self.microstructData{n}.diskCenters(:, 2)...
-                        - centroids_y).^2;
-                    for circle = 1:numel(self.microstructData{n}.diskRadii)
-                        %set pixels inside circle to false
-                        dist_sq = dist_x_sq(circle, :)' + dist_y_sq(circle, :);
-                        self.input_bitmap{n}(dist_sq < self...
-                            .microstructData{n}.diskRadii(circle)^2) = false;
-                    end
             end
         end
         
