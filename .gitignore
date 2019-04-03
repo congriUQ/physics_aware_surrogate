@@ -15,6 +15,9 @@
 # Simulink Code Generation
 slprj/
 
+# parallelization data
+.par_job_files/
+
 # Data files
 *.mat
 *.txt

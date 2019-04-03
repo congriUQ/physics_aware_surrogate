@@ -278,83 +278,6 @@ classdef ModelParams < matlab.mixin.Copyable
             self.rf2fem = self.gridRF.map2fine(self.coarseMesh_geometry);
         end
         
-        %depreceated
-        function load(self)
-            %Initialize params theta_c, theta_cf
-            
-            %Coarse mesh object
-            if exist('./data/coarseMesh.mat', 'file')
-                load('./data/coarseMesh.mat', 'coarseMesh');
-                self.coarseMesh = coarseMesh;
-            else
-                error('No coarseMesh found. Gen. Mesh obj. and save to ./data')
-            end
-            
-            %Load trained params from disk
-            disp('Loading trained parameters from disk...')
-            self.gamma = dlmread('./data/thetaPriorHyperparam');
-            self.gamma = self.gamma(end, :);
-            load('./data/prior_theta_c');
-            self.prior_theta_c = priortype;
-            self.theta_c = dlmread('./data/theta_c');
-            self.theta_c = self.theta_c(end, :)';
-            self.Sigma_c = dlmread('./data/sigma_c');
-            self.Sigma_c = diag(self.Sigma_c(end, :));
-            
-            addpath('./mesh');
-            load('./data/gridRF.mat');
-            self.gridRF = gridRF;
-            self.rf2fem = gridRF.map2fine(coarseMesh.gridX, coarseMesh.gridY);
-            
-            self.sigma_cf.s0 = dlmread('./data/sigma_cf')';
-            load('./data/gridS.mat');
-            self.fineGridX = fineGridX;
-            self.fineGridY = fineGridY;
-            
-            load('./data/interpolationMode.mat');
-            self.interpolationMode = interpolationMode;
-            
-            load('./data/smoothingParameter.mat');
-            self.smoothingParameter = smoothingParameter;
-            load('./data/boundarySmoothingPixels.mat');
-            self.boundarySmoothingPixels = boundarySmoothingPixels;
-            
-            load('./data/boundarySmoothingPixels.mat');
-            self.boundarySmoothingPixels = boundarySmoothingPixels;
-            
-            try
-                load('./data/Sigma_theta_c.mat');
-                self.Sigma_theta_c = Sigma_theta_c;
-            catch
-                warning('Sigma_theta_c not found.');
-            end
-            disp('done')
-            
-            disp('Loading data normalization data...')
-            try
-                self.featureFunctionMean =...
-                    dlmread('./data/featureFunctionMean');
-                self.featureFunctionSqMean =...
-                    dlmread('./data/featureFunctionSqMean');
-            catch
-                warning(strcat('featureFunctionMean, featureFunctionSqMean',...
-                    'not found, setting it to 0.'))
-                self.featureFunctionMean = 0;
-                self.featureFunctionSqMean = 0;
-            end
-            
-            try
-                self.featureFunctionMin = dlmread('./data/featureFunctionMin');
-                self.featureFunctionMax = dlmread('./data/featureFunctionMax');
-            catch
-                warning(strcat('featureFunctionMin, featureFunctionMax', ...
-                    'not found, setting it to 0.'))
-                self.featureFunctionMin = 0;
-                self.featureFunctionMax = 0;
-            end
-            disp('done')
-        end
-        
         function printCurrentParams(self)
             %Print current model params on screen
             
@@ -733,41 +656,18 @@ classdef ModelParams < matlab.mixin.Copyable
                 
             %Axes 1
             self.pCellScores.sp1 =...
-                subplot(2, 3, 1, 'Parent', self.pCellScores.figure);
+                subplot(1, 2, 1, 'Parent', self.pCellScores.figure);
             cbp_lambda = colorbar('Parent', self.pCellScores.figure);
             self.pCellScores.sp1.YDir = 'normal';
             axis(self.pCellScores.sp1, 'square');
             
+            
             %Axes 2
-            self.pCellScores.sp2 =...
-                subplot(2, 3, 2, 'Parent', self.pCellScores.figure);
-            cbp_lambda = colorbar('Parent', self.pCellScores.figure);
-            self.pCellScores.sp2.YDir = 'normal';
-            axis(self.pCellScores.sp2, 'square');
-            
-            %Axes 3
-            self.pCellScores.sp3 =...
-                subplot(2, 3, 3, 'Parent', self.pCellScores.figure);
-            cbp_lambda = colorbar('Parent', self.pCellScores.figure);
-            self.pCellScores.sp3.YDir = 'normal';
-            axis(self.pCellScores.sp3, 'square');
-            
-            %Axes 4
             self.pCellScores.sp4 =...
-                subplot(2, 3, 4, 'Parent', self.pCellScores.figure);
+                subplot(1, 2, 2, 'Parent', self.pCellScores.figure);
             self.pCellScores.sp4.XLabel.String = 'iteration';
             self.pCellScores.sp4.YLabel.String = 'cell score';
             
-            %Axes 5
-            self.pCellScores.sp5 =...
-                subplot(2, 3, 5, 'Parent', self.pCellScores.figure);
-            self.pCellScores.sp5.XLabel.String = 'iteration';
-            self.pCellScores.sp5.YLabel.String = 'active cell score';
-            
-            self.pCellScores.sp6 =...
-                subplot(2, 3, 6, 'Parent', self.pCellScores.figure);
-            self.pCellScores.sp6.XLabel.String = 'iteration';
-            self.pCellScores.sp6.YLabel.String = 'active cell score with S';
 
             
             imagesc(reshape(self.rf2fem*(-self.cell_score),...
@@ -779,30 +679,6 @@ classdef ModelParams < matlab.mixin.Copyable
             self.pCellScores.sp1.YDir = 'normal';
             self.pCellScores.sp1.Title.String = 'Elbo cell score';
             
-            if numel(self.active_cells) ~= size(self.rf2fem, 2)
-                self.active_cells = nan*ones(1, size(self.rf2fem, 2));
-            end
-            imagesc(reshape(self.rf2fem*log(self.active_cells'),...
-                numel(self.coarseGridX), numel(self.coarseGridY))',...
-                'Parent', self.pCellScores.sp2);
-            self.pCellScores.sp2.GridLineStyle = 'none';
-            self.pCellScores.sp2.XTick = [];
-            self.pCellScores.sp2.YTick = [];
-            self.pCellScores.sp2.YDir = 'normal';
-            self.pCellScores.sp2.Title.String = 'active cells';
-            
-            if numel(self.active_cells_S) ~= size(self.rf2fem, 2)
-                self.active_cells_S = nan*ones(1, size(self.rf2fem, 2));
-            end
-            imagesc(reshape(self.rf2fem*log(self.active_cells_S'),...
-                numel(self.coarseGridX), numel(self.coarseGridY))',...
-                'Parent', self.pCellScores.sp3);
-            self.pCellScores.sp3.GridLineStyle = 'none';
-            self.pCellScores.sp2.GridLineStyle = 'none';
-            self.pCellScores.sp3.XTick = [];
-            self.pCellScores.sp3.YTick = [];
-            self.pCellScores.sp3.YDir = 'normal';
-            self.pCellScores.sp3.Title.String = '$\log p_{cf}$';
             
             
             if(numel(self.cell_score) ~=...
@@ -825,45 +701,6 @@ classdef ModelParams < matlab.mixin.Copyable
             axis(self.pCellScores.sp4, 'tight');
             axis(self.pCellScores.sp4, 'fill');
             
-            
-            if(numel(self.pCellScores.p_active_cells)~=numel(self.active_cells))
-                for k = (numel(self.pCellScores.p_active_cells) + 1):...
-                        numel(self.active_cells)
-                    self.pCellScores.p_active_cells{k} = ...
-                        animatedline('Parent', self.pCellScores.sp5);
-                    self.pCellScores.p_active_cells{k}.LineWidth = .5;
-                    self.pCellScores.p_active_cells{k}.Marker = 'x';
-                    self.pCellScores.p_active_cells{k}.MarkerSize = 6;
-                    self.pCellScores.p_active_cells{k}.Color = map(k, :);
-                end
-                
-            end
-            for k = 1:numel(self.active_cells)
-                addpoints(self.pCellScores.p_active_cells{k},...
-                    self.EM_iter, log(self.active_cells(k)));
-            end
-            axis(self.pCellScores.sp5, 'tight');
-            axis(self.pCellScores.sp5, 'fill');
-            
-            
-            if(numel(self.pCellScores.p_active_cells_S)...
-                    ~= numel(self.active_cells_S))
-                for k = (numel(self.pCellScores.p_active_cells_S) + 1):...
-                        numel(self.active_cells_S)
-                    self.pCellScores.p_active_cells_S{k} =...
-                        animatedline('Parent', self.pCellScores.sp6);
-                    self.pCellScores.p_active_cells_S{k}.LineWidth = .5;
-                    self.pCellScores.p_active_cells_S{k}.Marker = 'x';
-                    self.pCellScores.p_active_cells_S{k}.MarkerSize = 6;
-                    self.pCellScores.p_active_cells_S{k}.Color = map(k, :);
-                end
-            end
-            for k = 1:numel(self.active_cells_S)
-                addpoints(self.pCellScores.p_active_cells_S{k},...
-                    self.EM_iter, log(self.active_cells_S(k)));
-            end
-            axis(self.pCellScores.sp6, 'tight');
-            axis(self.pCellScores.sp6, 'fill');
             drawnow;
             
         end
