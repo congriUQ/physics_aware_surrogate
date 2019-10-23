@@ -108,10 +108,17 @@ to predict on a small test set. The code may be used to follow up on the paper r
 If this code is relevant for your research, we would be grateful if you cite our preprint:
 ```
 @article{Grigo2019,
-Author = {Constantin Grigo and Phaedon-Stelios Koutsourelakis},
-Title = {A physics-aware, probabilistic machine learning framework for coarse-graining high-dimensional systems in the Small Data regime},
-Year = {2019},
-Eprint = {arXiv:1902.03968},
+title = "A physics-aware, probabilistic machine learning framework for coarse-graining high-dimensional systems in the Small Data regime",
+journal = "Journal of Computational Physics",
+volume = "397",
+pages = "108842",
+year = "2019",
+issn = "0021-9991",
+doi = "https://doi.org/10.1016/j.jcp.2019.05.053",
+url = "http://www.sciencedirect.com/science/article/pii/S0021999119305261",
+author = "Constantin Grigo and Phaedon-Stelios Koutsourelakis",
+keywords = "Uncertainty quantification, Bayesian inference, Coarse-graining, Variational inference, Random media, Multi-physics models",
+abstract = "The automated construction of coarse-grained models represents a pivotal component in computer simulation of physical systems and is a key enabler in various analysis and design tasks related to uncertainty quantification. Pertinent methods are severely inhibited by the high-dimension of the parametric input and the limited number of training input/output pairs that can be generated when computationally demanding forward models are considered. Such cases are frequently encountered in the modeling of random heterogeneous media where the scale of the microstructure necessitates the use of high-dimensional random vectors and very fine discretizations of the governing equations. The present paper proposes a probabilistic Machine Learning framework that is capable of operating in the presence of Small Data by exploiting aspects of the physical structure of the problem as well as contextual knowledge. As a result, it can perform comparably well under extrapolative conditions. It unifies the tasks of dimensionality and model-order reduction through an encoder-decoder scheme that simultaneously identifies a sparse set of salient lower-dimensional microstructural features and calibrates an inexpensive, coarse-grained model which is predictive of the output. Information loss is accounted for and quantified in the form of probabilistic predictive estimates. The learning engine is based on Stochastic Variational Inference. We demonstrate how the variational objectives can be used not only to train the coarse-grained model, but also to suggest refinements that lead to improved predictions."
 }
 ```
 
